@@ -1,0 +1,138 @@
+TASK 1 :
+
+Header:
+#pragma once
+#include <iostream>
+using namespace std;
+
+template <class T>
+class Queue {
+private:
+    T* items;
+    int front;
+    int rear;
+    int count;
+    int capacity;
+
+    void Resize(int newCapacity);
+
+public:
+    Queue(int size = 5);
+    ~Queue();
+
+    bool IsEmpty() const;
+    bool IsFull() const;
+    void Enqueue(T value);
+    void Dequeue(T& value);
+    T Peek() const;
+    int Size() const;
+};
+Implementation file
+#include "queue.h"
+template <class T>
+Queue<T>::Queue(int size) {
+    capacity = size;
+    items = new T[capacity];
+    front = 0;
+    rear = -1;
+    count = 0;
+}
+template <class T>
+Queue<T>::~Queue() {
+    delete[] items;
+}
+template <class T>
+bool Queue<T>::IsEmpty() const {
+    return (count == 0);
+}
+template <class T>
+bool Queue<T>::IsFull() const {
+    return (count == capacity);
+}
+
+
+template <class T>
+void Queue<T>::Resize(int newCapacity) {
+
+    T* newItems = new T[newCapacity];
+
+    for (int i = 0; i < count; i++) {
+        newItems[i] = items[(front + i) % capacity];
+    }
+    delete[] items;
+    items = newItems;
+    capacity = newCapacity;
+    front = 0;
+    rear = count - 1;
+    cout << "Queue resized to: " << capacity << endl;
+}
+template <class T>
+void Queue<T>::Enqueue(T value) {
+
+    if (IsFull()) {
+        Resize(capacity * 2);
+    }
+    rear = (rear + 1) % capacity;
+    items[rear] = value;
+    count++;
+
+    cout << value << " inserted." << endl;
+}
+template <class T>
+void Queue<T>::Dequeue(T& value) {
+
+    if (IsEmpty()) {
+        cout << "Queue Underflow!" << endl;
+        return;
+    }
+    value = items[front];
+    front = (front + 1) % capacity;
+    count--;
+    cout << value << " removed." << endl;
+}
+template <class T>
+T Queue<T>::Peek() const {
+
+    if (IsEmpty()) {
+        cout << "Queue is empty!" << endl;
+        return T();
+    }
+
+    return items[front];
+}
+template <class T>
+int Queue<T>::Size() const {
+    return count;
+}
+template class Queue<int>;
+template class Queue<double>;
+template class Queue<string>;
+
+Driver program :
+#include <iostream>
+#include "queue.h"
+using namespace std;
+
+int main() {
+
+    cout << "=== Dynamic Queue Using Template ===" << endl;
+
+    Queue<int> q(3);
+    int value;
+
+    q.Enqueue(10);
+    q.Enqueue(20);
+    q.Enqueue(30);
+    q.Enqueue(40);   // Resize happens here
+
+    cout << "Front element: " << q.Peek() << endl;
+    cout << "Current Size: " << q.Size() << endl;
+
+    q.Dequeue(value);
+    q.Dequeue(value);
+
+    cout << "Size after dequeue: " << q.Size() << endl;
+
+    return 0;
+} 
+  
