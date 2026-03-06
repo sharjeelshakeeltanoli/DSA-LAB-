@@ -1,0 +1,236 @@
+Header: 
+#ifndef LIST_H
+#define LIST_H
+
+#include <iostream>
+using namespace std;
+
+template <class T>
+class List
+{
+private:
+
+    struct node
+    {
+        T info;
+        node* next;
+    };
+
+    node* head;
+
+public:
+
+   
+    List()
+    {
+        head = NULL;
+    }
+
+   
+    ~List()
+    {
+        node* temp;
+
+        while (head != NULL)
+        {
+            temp = head;
+            head = head->next;
+            delete temp;
+        }
+    }
+
+    
+    bool emptyList()
+    {
+        if (head == NULL)
+            return true;
+        else
+            return false;
+    }
+
+  
+    void push(T value)
+    {
+        node* newNode = new node;
+
+        newNode->info = value;
+        newNode->next = head;
+
+        head = newNode;
+    }
+
+    
+    void insertafter(T oldValue, T newValue)
+    {
+        node* temp = head;
+
+        while (temp != NULL)
+        {
+            if (temp->info == oldValue)
+            {
+                node* newNode = new node;
+
+                newNode->info = newValue;
+                newNode->next = temp->next;
+
+                temp->next = newNode;
+
+                return;
+            }
+
+            temp = temp->next;
+        }
+
+        cout << "Value not found in list\n";
+    }
+    void deleteItem(T value)
+    {
+        node* temp = head;
+        node* prev = NULL;
+
+        while (temp != NULL && temp->info != value)
+        {
+            prev = temp;
+            temp = temp->next;
+        }
+
+        if (temp == NULL)
+        {
+            cout << "Value not found\n";
+            return;
+        }
+
+        if (prev == NULL)
+            head = temp->next;
+        else
+            prev->next = temp->next;
+
+        delete temp;
+    }
+
+    T pop()
+    {
+        if (emptyList())
+        {
+            cout << "List is empty\n";
+            return -1;
+        }
+
+        node* temp = head;
+        T value = temp->info;
+
+        head = head->next;
+
+        delete temp;
+
+        return value;
+    }
+
+      void display()
+    {
+        node* temp = head;
+
+        cout << "List: ";
+
+        while (temp != NULL)
+        {
+            cout << temp->info << " -> ";
+            temp = temp->next;
+        }
+
+        cout << "NULL" << endl;
+    }
+
+};
+
+#endif
+Driver  file 
+#include <iostream>
+#include "List.h"
+
+using namespace std;
+
+int main()
+{
+    List<int> list;
+
+    int choice;
+    int value;
+    int oldValue;
+
+    do
+    {
+        cout << "\n===== LINKED LIST TEST PROGRAM =====\n";
+        cout << "1. Push (Insert at beginning)\n";
+        cout << "2. Insert after a value\n";
+        cout << "3. Delete a value\n";
+        cout << "4. Pop (remove from beginning)\n";
+        cout << "5. Display list\n";
+        cout << "6. Check if empty\n";
+        cout << "7. Exit\n";
+
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice)
+        {
+        case 1:
+
+            cout << "Enter value: ";
+            cin >> value;
+
+            list.push(value);
+            list.display();
+
+            break;
+
+        case 2:
+
+            cout << "Enter existing value: ";
+            cin >> oldValue;
+
+            cout << "Enter new value: ";
+            cin >> value;
+
+            list.insertafter(oldValue, value);
+            list.display();
+
+            break;
+
+        case 3:
+
+            cout << "Enter value to delete: ";
+            cin >> value;
+
+            list.deleteItem(value);
+            list.display();
+
+            break;
+
+        case 4:
+
+            cout << "Removed value: " << list.pop() << endl;
+            list.display();
+
+            break;
+
+        case 5:
+
+            list.display();
+            break;
+
+        case 6:
+
+            if (list.emptyList())
+                cout << "List is empty\n";
+            else
+                cout << "List is not empty\n";
+
+            break;
+
+        }
+
+    } while (choice != 7);
+
+    return 0;
+}

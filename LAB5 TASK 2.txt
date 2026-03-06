@@ -1,0 +1,192 @@
+Header: 
+#ifndef LINKEDSTR_H
+#define LINKEDSTR_H
+
+#include <iostream>
+using namespace std;
+
+struct Node
+{
+    int info;     
+    Node* next;     
+};
+
+class LinkedStr
+{
+private:
+
+    Node* ptr;      
+
+public:
+
+    LinkedStr();       
+    ~LinkedStr();      
+
+    void makeStr(int len);  
+    void displayStr();        
+
+    void removeFirst();    
+    void removeLast();       
+    void remove(int k);      
+};
+
+#endif
+Implementation file: 
+#include "LinkedStr.h"
+
+ 
+LinkedStr::LinkedStr()
+{
+    ptr = NULL;
+}
+
+ 
+LinkedStr::~LinkedStr()
+{
+    Node* temp;
+
+    while (ptr != NULL)
+    {
+        temp = ptr;
+        ptr = ptr->next;
+        delete temp;
+    }
+}
+
+ 
+void LinkedStr::makeStr(int len)
+{
+    int value;
+
+    for (int i = 0; i < len; i++)
+    {
+        cout << "Enter value: ";
+        cin >> value;
+
+        Node* newNode = new Node;
+
+        newNode->info = value;
+        newNode->next = ptr;
+
+        ptr = newNode;
+    }
+}
+
+ 
+void LinkedStr::displayStr()
+{
+    Node* temp = ptr;
+
+    cout << "List: ";
+
+    while (temp != NULL)
+    {
+        cout << temp->info << " -> ";
+        temp = temp->next;
+    }
+
+    cout << "NULL" << endl;
+}
+
+ 
+void LinkedStr::removeFirst()
+{
+    if (ptr == NULL)
+        return;
+
+    Node* temp = ptr;
+
+    ptr = ptr->next;
+
+    delete temp;
+}
+
+ 
+void LinkedStr::removeLast()
+{
+    if (ptr == NULL)
+        return;
+
+    if (ptr->next == NULL)
+    {
+        delete ptr;
+        ptr = NULL;
+        return;
+    }
+
+    Node* temp = ptr;
+    Node* prev = NULL;
+
+    while (temp->next != NULL)
+    {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    prev->next = NULL;
+
+    delete temp;
+}
+
+ 
+void LinkedStr::remove(int k)
+{
+    if (ptr == NULL)
+        return;
+
+    Node* temp = ptr;
+    Node* prev = NULL;
+
+    while (temp != NULL && temp->info != k)
+    {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    if (temp == NULL)
+        return;
+
+    if (prev == NULL)
+        ptr = temp->next;
+    else
+        prev->next = temp->next;
+
+    delete temp;
+}
+
+Driver Program: 
+#include "LinkedStr.h"
+
+int main()
+{
+    LinkedStr obj;
+
+    int n;
+    int value;
+
+    cout << "Enter number of elements: ";
+    cin >> n;
+
+    obj.makeStr(n);
+
+    cout << "\nCurrent List:\n";
+    obj.displayStr();
+
+    cout << "\nRemoving first element...\n";
+    obj.removeFirst();
+    obj.displayStr();
+
+    cout << "\nRemoving last element...\n";
+    obj.removeLast();
+    obj.displayStr();
+
+    cout << "\nEnter value to remove from list: ";
+    cin >> value;
+
+    obj.remove(value);
+
+    cout << "\nUpdated List:\n";
+    obj.displayStr();
+
+    return 0;
+}
