@@ -1,0 +1,215 @@
+#include <iostream>
+using namespace std;
+
+template <class T>
+class DoublyList
+{
+    struct Node
+    {
+        T data;
+        Node* prev;
+        Node* next;
+    };
+
+    Node* head;
+
+public:
+
+    
+    DoublyList()
+    {
+        head = NULL;
+    }
+
+    
+    void insert(T value)
+    {
+        Node* newNode = new Node;
+        newNode->data = value;
+        newNode->prev = NULL;
+        newNode->next = NULL;
+
+        if (head == NULL || value < head->data)
+        {
+            newNode->next = head;
+
+            if (head != NULL)
+            {
+                head->prev = newNode;
+            }
+
+            head = newNode;
+        }
+        else
+        {
+            Node* temp = head;
+
+            
+            while (temp->next != NULL && temp->next->data < value)
+            {
+                temp = temp->next;
+            }
+
+            newNode->next = temp->next;
+
+            if (temp->next != NULL)
+            {
+                temp->next->prev = newNode;
+            }
+
+            temp->next = newNode;
+            newNode->prev = temp;
+        }
+
+        cout << "Value inserted\n";
+    }
+
+
+    
+    void deleteNode(T value)
+    {
+        if (head == NULL)
+        {
+            cout << "List is empty\n";
+            return;
+        }
+
+        Node* temp = head;
+
+       
+        while (temp != NULL && temp->data != value)
+        {
+            temp = temp->next;
+        }
+
+        if (temp == NULL)
+        {
+            cout << "Value not found\n";
+            return;
+        }
+
+       
+        if (temp == head)
+        {
+            head = head->next;
+
+            if (head != NULL)
+            {
+                head->prev = NULL;
+            }
+        }
+        else
+        {
+            temp->prev->next = temp->next;
+
+            if (temp->next != NULL)
+            {
+                temp->next->prev = temp->prev;
+            }
+        }
+
+        delete temp;
+
+        cout << "Node deleted\n";
+    }
+
+
+    void search(T value)
+    {
+        Node* temp = head;
+
+        while (temp != NULL)
+        {
+            if (temp->data == value)
+            {
+                cout << "Value found in list\n";
+                return;
+            }
+
+            temp = temp->next;
+        }
+
+        cout << "Value not found\n";
+    }
+
+
+   
+    void traverse()
+    {
+        if (head == NULL)
+        {
+            cout << "List is empty\n";
+            return;
+        }
+
+        Node* temp = head;
+
+        cout << "List elements: ";
+
+        while (temp != NULL)
+        {
+            cout << temp->data << " <-> ";
+            temp = temp->next;
+        }
+
+        cout << "NULL\n";
+    }
+
+};
+
+
+int main()
+{
+    DoublyList<int> list;
+
+    int choice;
+    int value;
+
+    do
+    {
+        cout << "\nMenu\n";
+        cout << "1. Insert\n";
+        cout << "2. Delete\n";
+        cout << "3. Search\n";
+        cout << "4. Traverse\n";
+        cout << "5. Exit\n";
+
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice)
+        {
+        case 1:
+            cout << "Enter value to insert: ";
+            cin >> value;
+            list.insert(value);
+            break;
+
+        case 2:
+            cout << "Enter value to delete: ";
+            cin >> value;
+            list.deleteNode(value);
+            break;
+
+        case 3:
+            cout << "Enter value to search: ";
+            cin >> value;
+            list.search(value);
+            break;
+
+        case 4:
+            list.traverse();
+            break;
+
+        case 5:
+            cout << "Program finished\n";
+            break;
+
+        default:
+            cout << "Wrong choice\n";
+        }
+
+    } while (choice != 5);
+
+    return 0;
+}

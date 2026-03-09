@@ -1,0 +1,188 @@
+#include <iostream>
+using namespace std;
+
+template <class T>
+class SinglyList
+{
+    struct Node
+    {
+        T data;
+        Node* next;
+    };
+
+    Node* head;
+
+public:
+
+    // constructor
+    SinglyList()
+    {
+        head = NULL;
+    }
+
+    // function to insert in sorted order
+    void insert(T value)
+    {
+        Node* newNode = new Node;
+        newNode->data = value;
+        newNode->next = NULL;
+
+        // if list empty OR insert at start
+        if (head == NULL || value < head->data)
+        {
+            newNode->next = head;
+            head = newNode;
+        }
+        else
+        {
+            Node* temp = head;
+
+            // move until correct position
+            while (temp->next != NULL && temp->next->data < value)
+            {
+                temp = temp->next;
+            }
+
+            newNode->next = temp->next;
+            temp->next = newNode;
+        }
+
+        cout << "Value Inserted\n";
+    }
+
+    // delete function
+    void deleteNode(T value)
+    {
+        if (head == NULL)
+        {
+            cout << "List is empty\n";
+            return;
+        }
+
+        // delete first node
+        if (head->data == value)
+        {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
+            cout << "Node deleted\n";
+            return;
+        }
+
+        Node* temp = head;
+
+        while (temp->next != NULL && temp->next->data != value)
+        {
+            temp = temp->next;
+        }
+
+        if (temp->next == NULL)
+        {
+            cout << "Value not found\n";
+        }
+        else
+        {
+            Node* del = temp->next;
+            temp->next = del->next;
+            delete del;
+            cout << "Node deleted\n";
+        }
+    }
+
+    // search function
+    void search(T value)
+    {
+        Node* temp = head;
+
+        while (temp != NULL)
+        {
+            if (temp->data == value)
+            {
+                cout << "Value found in list\n";
+                return;
+            }
+            temp = temp->next;
+        }
+
+        cout << "Value not found\n";
+    }
+
+    // traverse function
+    void traverse()
+    {
+        if (head == NULL)
+        {
+            cout << "List is empty\n";
+            return;
+        }
+
+        Node* temp = head;
+
+        cout << "List elements: ";
+
+        while (temp != NULL)
+        {
+            cout << temp->data << " -> ";
+            temp = temp->next;
+        }
+
+        cout << "NULL\n";
+    }
+};
+
+
+int main()
+{
+    SinglyList<int> list;
+
+    int choice;
+    int value;
+
+    do
+    {
+        cout << "\nMenu\n";
+        cout << "1. Insert\n";
+        cout << "2. Delete\n";
+        cout << "3. Search\n";
+        cout << "4. Traverse\n";
+        cout << "5. Exit\n";
+
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice)
+        {
+        case 1:
+            cout << "Enter value to insert: ";
+            cin >> value;
+            list.insert(value);
+            break;
+
+        case 2:
+            cout << "Enter value to delete: ";
+            cin >> value;
+            list.deleteNode(value);
+            break;
+
+        case 3:
+            cout << "Enter value to search: ";
+            cin >> value;
+            list.search(value);
+            break;
+
+        case 4:
+            list.traverse();
+            break;
+
+        case 5:
+            cout << "Program ended\n";
+            break;
+
+        default:
+            cout << "Invalid choice\n";
+        }
+
+    } while (choice != 5);
+
+    return 0;
+}
